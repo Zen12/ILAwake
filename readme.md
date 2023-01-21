@@ -1,9 +1,15 @@
 ### ILAwake
 ILAwake - is a simple tool for generating boiler plate code.
 
+### How to add
+Add to package manifest: 
+```
+    "com.zen12.ilawake": "git@github.com:Zen12/ILAwake.git",
+```
+
 ### How to it works
-It inserts code in Awake method (or creates and inserts) for cached references. 
-It doesn't change your source code. It uses ILPostProcessor to insert IL-Code after compilation.
+It inserts IL-Code in Awake method (or creates and inserts). 
+It doesn't change your source code. 
 
 For Example:
 
