@@ -1,5 +1,5 @@
 ### ILAwake
-ILAwake - is a simple tool for generating boiler plate code.
+ILAwake - is a simple tool for generating boilerplate code.
 
 ### How to add
 Add to package manifest: 
@@ -82,3 +82,19 @@ public class LogTestBehaviour : MonoBehaviour
     }
 }
 ```
+
+
+### Feature list
+Supported Methods:
+- [AwakeGet] 
+  - [x] GetComponent<T> for Reference Types
+  - [x] GetComponents<T> for Array
+  - [ ] GetComponents<T> for List<T>
+- [AwakeGetChild]
+  - [ ] GetComponentInChildren<T> for Reference Types. With includeInactive argument
+  - [ ] GetComponentsInChildren<T> for array.  With includeInactive argument
+  - [ ] GetComponentsChildren<T> for List<T>.  With includeInactive argument
+- [AwakeFind]
+  - [ ] FindObjectOfType<T> for Reference Types. With includeInactive argument
+  - [ ] FindObjectsOfType<T> for array. With includeInactive argument
+  - [ ] FindObjectsOfType<T> for List<T>. With includeInactive argument
