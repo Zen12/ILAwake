@@ -1,7 +1,7 @@
 {
     "name": "com.zen12.ilawake",
     "displayName": "IL Awake",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "unity": "2020.3",
     "description": "IL generation of boiler plate code",
     "keywords": ["IL", "Code Gen", "IL Awake"],
