@@ -45,25 +45,30 @@ namespace ILAwake.Editor
         private static List<DiagnosticMessage> PostProcessAssembly(AssemblyDefinition assemblyDefinition)
         {
             var messages = new List<DiagnosticMessage>();
-            var allAwakeGetProperties = new Collection<FieldDefinition>();
+            var allSimpleFields = new Collection<FieldDefinition>();
+            var allArrayFields = new Collection<FieldDefinition>();
             
             var getComponent = typeof(MonoBehaviour)
                 .GetMethods()
                 .First(m => m.IsGenericMethod && m.Name == nameof(MonoBehaviour.GetComponent));
+            
+            var getComponentArray = typeof(MonoBehaviour)
+                .GetMethods()
+                .First(m => m.IsGenericMethod && m.Name == nameof(MonoBehaviour.GetComponents) && m.GetParameters().Length == 0);
 
             foreach (var moduleDefinition in assemblyDefinition.Modules)
             {
                 var getComponentRef = moduleDefinition.ImportReference(getComponent);
-
+                var getComponentArrayRef = moduleDefinition.ImportReference(getComponentArray);
+                
                 foreach (var typeDefinition in moduleDefinition.Types)
                 {
-                    if (typeDefinition.IsClass == false || 
-                        typeDefinition.IsAbstract || 
-                        typeDefinition.BaseType == null ||
+                    if (typeDefinition.BaseType == null ||
                         typeDefinition.BaseType.Name != nameof(MonoBehaviour))
                         continue;
                     
-                    allAwakeGetProperties.Clear();
+                    allSimpleFields.Clear();
+                    allArrayFields.Clear();
 
                     foreach (var field in typeDefinition.Fields)
                     {
@@ -71,13 +76,20 @@ namespace ILAwake.Editor
                         {
                             if (customAttribute.AttributeType.Name == nameof(AwakeGet))
                             {
-                                allAwakeGetProperties.Add(field);
+                                if (field.FieldType.IsArray)
+                                {
+                                    allArrayFields.Add(field);
+                                }
+                                else
+                                {
+                                    allSimpleFields.Add(field);
+                                }
                                 break;
                             }
                         }
                     }
 
-                    if (allAwakeGetProperties.Count > 0)
+                    if (allSimpleFields.Count > 0 || allArrayFields.Count > 0)
                     {
                         MethodDefinition awakeMethod = null;
                         foreach (var methodDefinition in typeDefinition.Methods)
@@ -104,8 +116,7 @@ namespace ILAwake.Editor
                         var ilProcessor = awakeMethod.Body.GetILProcessor();
                         var first = ilProcessor.Body.Instructions[0];
 
-
-                        foreach (var awakeGetProperty in allAwakeGetProperties)
+                        foreach (var awakeGetProperty in allSimpleFields)
                         {
                             var fieldType = awakeGetProperty.FieldType;
                             
@@ -115,6 +126,24 @@ namespace ILAwake.Editor
                             var genComponentMethInstance = new GenericInstanceMethod(getComponentRef);
                             
                             genComponentMethInstance.GenericArguments.Add(fieldType);
+                            ilProcessor.InsertBefore(first, ilProcessor.Create(OpCodes.Call, genComponentMethInstance));
+                            ilProcessor.InsertBefore(first, ilProcessor.Create(OpCodes.Stfld, awakeGetProperty));
+                        }
+                        
+                        
+                        foreach (var awakeGetProperty in allArrayFields)
+                        {
+                            var fieldType = awakeGetProperty.FieldType;
+                            
+                            ilProcessor.InsertBefore(first, ilProcessor.Create(OpCodes.Ldarg_0));
+                            ilProcessor.InsertBefore(first, ilProcessor.Create(OpCodes.Ldarg_0));
+                            
+                            var genComponentMethInstance = new GenericInstanceMethod(getComponentArrayRef);
+
+                            var type = moduleDefinition.ImportReference(fieldType.Resolve());
+
+                            genComponentMethInstance.GenericArguments.Add(type);
+
                             ilProcessor.InsertBefore(first, ilProcessor.Create(OpCodes.Call, genComponentMethInstance));
                             ilProcessor.InsertBefore(first, ilProcessor.Create(OpCodes.Stfld, awakeGetProperty));
                         }
