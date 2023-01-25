@@ -98,3 +98,7 @@ Supported Methods:
   - [ ] FindObjectOfType<T> for Reference Types. With includeInactive argument
   - [ ] FindObjectsOfType<T> for array. With includeInactive argument
   - [ ] FindObjectsOfType<T> for List<T>. With includeInactive argument
+- ILViewer (Window->ILView)
+  - [x] Search by class name 
+  - [ ] Search by method name
+  - [ ] Show C# equivalent 
