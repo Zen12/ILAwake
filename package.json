@@ -1,0 +1,12 @@
+{
+    "name": "com.zen12.ilawake",
+    "displayName": "IL Awake",
+    "version": "1.0.1",
+    "unity": "2020.3",
+    "description": "IL generation of boiler plate code",
+    "keywords": ["IL", "Code Gen", "IL Awake"],
+    "license": "MIT",
+    "dependencies": {
+        "com.unity.nuget.mono-cecil": "1.10.1"
+    }
+}

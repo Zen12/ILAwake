@@ -1,0 +1,21 @@
+{
+    "name": "Unity.Test.CodeGen",
+    "rootNamespace": "",
+    "references": [
+        "GUID:0efd0a83d343e41bfb8e81a23c83ebb9"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Mono.Cecil.dll",
+        "Mono.Cecil.Pdb.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
